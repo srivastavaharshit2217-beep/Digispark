@@ -1,8 +1,14 @@
 ```javascript
 const express = require("express");
+
 const db = require("../db");
 
 const router = express.Router();
+
+
+// ==========================================
+// CREATE ENQUIRY
+// ==========================================
 
 router.post("/", async (req, res) => {
 
@@ -15,41 +21,74 @@ router.post("/", async (req, res) => {
       message
     } = req.body;
 
-    if (!name || !email || !service || !message) {
+
+    // Validation
+
+    if (
+      !name ||
+      !email ||
+      !service ||
+      !message
+    ) {
 
       return res.status(400).json({
+
         success: false,
-        message: "Please fill all required fields."
+
+        message:
+          "Please fill all required fields."
+
       });
 
     }
 
-    const [result] = await db.execute(
-      `INSERT INTO enquiries
-      (name, email, service, message)
-      VALUES (?, ?, ?, ?)`,
-      [name, email, service, message]
-    );
+
+    // Save to database
+
+    const [result] =
+      await db.execute(
+
+        `INSERT INTO enquiries
+        (name, email, service, message)
+        VALUES (?, ?, ?, ?)`,
+
+        [
+          name,
+          email,
+          service,
+          message
+        ]
+
+      );
+
 
     res.status(201).json({
 
       success: true,
 
-      message: "Your enquiry has been submitted successfully.",
+      message:
+        "Your enquiry has been submitted successfully.",
 
-      enquiryId: result.insertId
+      enquiryId:
+        result.insertId
 
     });
 
+
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Database Error:",
+      error
+    );
+
 
     res.status(500).json({
 
       success: false,
 
-      message: "Something went wrong."
+      message:
+        "Unable to save your enquiry."
 
     });
 
@@ -57,6 +96,6 @@ router.post("/", async (req, res) => {
 
 });
 
+
 module.exports = router;
 ```
-
