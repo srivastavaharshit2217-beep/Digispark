@@ -1,19 +1,14 @@
 ```javascript
-// ==========================================
-// DigiSpark Backend Server
-// ==========================================
-
 const express = require("express");
+
 const cors = require("cors");
+
 
 const app = express();
 
 
-// ==========================================
-// PORT
-// ==========================================
-
-const PORT = process.env.PORT || 5000;
+const PORT =
+  process.env.PORT || 5000;
 
 
 // ==========================================
@@ -24,20 +19,23 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
 
 
 // ==========================================
-// IMPORT ROUTES
+// ROUTES
 // ==========================================
 
-const enquiryRoutes = require("./routes/enquiries");
+const enquiryRoutes =
+  require("./routes/enquiries");
 
 
 // ==========================================
-// HOME / API STATUS
+// HOME
 // ==========================================
 
 app.get("/", (req, res) => {
@@ -46,69 +44,14 @@ app.get("/", (req, res) => {
 
     success: true,
 
-    message: "Welcome to DigiSpark API",
+    message:
+      "Welcome to DigiSpark API",
 
-    tagline: "Spark Your Digital Future",
+    tagline:
+      "Spark Your Digital Future",
 
-    status: "Backend is running"
-
-  });
-
-});
-
-
-// ==========================================
-// SERVICES API
-// ==========================================
-
-app.get("/api/services", (req, res) => {
-
-  const services = [
-
-    {
-      id: 1,
-      name: "Web Development",
-      description: "Modern and responsive websites."
-    },
-
-    {
-      id: 2,
-      name: "Digital Marketing",
-      description: "Grow your business with digital marketing."
-    },
-
-    {
-      id: 3,
-      name: "SEO",
-      description: "Improve your search engine visibility."
-    },
-
-    {
-      id: 4,
-      name: "Graphic Design",
-      description: "Professional graphics and branding."
-    },
-
-    {
-      id: 5,
-      name: "Video Editing",
-      description: "Professional reels and video editing."
-    },
-
-    {
-      id: 6,
-      name: "Business Solutions",
-      description: "Digital solutions for modern businesses."
-    }
-
-  ];
-
-
-  res.json({
-
-    success: true,
-
-    services: services
+    status:
+      "Backend is running"
 
   });
 
@@ -116,38 +59,114 @@ app.get("/api/services", (req, res) => {
 
 
 // ==========================================
-// ENQUIRY ROUTE
+// SERVICES
 // ==========================================
 
-app.use("/api/enquiries", enquiryRoutes);
+app.get(
+  "/api/services",
+  (req, res) => {
+
+    const services = [
+
+      {
+        id: 1,
+        name: "Web Development",
+        description:
+          "Modern and responsive websites."
+      },
+
+      {
+        id: 2,
+        name: "Digital Marketing",
+        description:
+          "Grow your business with digital marketing."
+      },
+
+      {
+        id: 3,
+        name: "SEO",
+        description:
+          "Improve your search engine visibility."
+      },
+
+      {
+        id: 4,
+        name: "Graphic Design",
+        description:
+          "Professional graphics and branding."
+      },
+
+      {
+        id: 5,
+        name: "Video Editing",
+        description:
+          "Professional reels and video editing."
+      },
+
+      {
+        id: 6,
+        name: "Business Solutions",
+        description:
+          "Digital solutions for modern businesses."
+      }
+
+    ];
+
+
+    res.json({
+
+      success: true,
+
+      services: services
+
+    });
+
+  }
+);
 
 
 // ==========================================
-// 404 ERROR
+// ENQUIRIES
 // ==========================================
 
-app.use((req, res) => {
-
-  res.status(404).json({
-
-    success: false,
-
-    message: "API route not found."
-
-  });
-
-});
+app.use(
+  "/api/enquiries",
+  enquiryRoutes
+);
 
 
 // ==========================================
-// START SERVER
+// 404
 // ==========================================
 
-app.listen(PORT, () => {
+app.use(
+  (req, res) => {
 
-  console.log(
-    `🚀 DigiSpark server running on port ${PORT}`
-  );
+    res.status(404).json({
 
-});
+      success: false,
+
+      message:
+        "API route not found."
+
+    });
+
+  }
+);
+
+
+// ==========================================
+// SERVER
+// ==========================================
+
+app.listen(
+  PORT,
+  () => {
+
+    console.log(
+      `🚀 DigiSpark server running on port ${PORT}`
+    );
+
+  }
+);
 ```
