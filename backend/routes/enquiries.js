@@ -14,16 +14,17 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const [result] = await db.execute(
+    const result = await db.query(
       `INSERT INTO enquiries (name, email, service, message)
-       VALUES (?, ?, ?, ?)`,
+       VALUES ($1, $2, $3, $4)
+       RETURNING id`,
       [name, email, service, message]
     );
 
     res.status(201).json({
       success: true,
       message: "Your enquiry has been submitted successfully.",
-      enquiryId: result.insertId
+      enquiryId: result.rows[0].id
     });
   } catch (error) {
     console.error("Database Error:", error);
