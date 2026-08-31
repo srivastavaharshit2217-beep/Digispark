@@ -1,101 +1,37 @@
-```javascript
 const express = require("express");
-
 const db = require("../db");
 
 const router = express.Router();
 
-
-// ==========================================
-// CREATE ENQUIRY
-// ==========================================
-
 router.post("/", async (req, res) => {
-
   try {
+    const { name, email, service, message } = req.body;
 
-    const {
-      name,
-      email,
-      service,
-      message
-    } = req.body;
-
-
-    // Validation
-
-    if (
-      !name ||
-      !email ||
-      !service ||
-      !message
-    ) {
-
+    if (!name || !email || !service || !message) {
       return res.status(400).json({
-
         success: false,
-
-        message:
-          "Please fill all required fields."
-
+        message: "Please fill all required fields."
       });
-
     }
 
-
-    // Save to database
-
-    const [result] =
-      await db.execute(
-
-        `INSERT INTO enquiries
-        (name, email, service, message)
-        VALUES (?, ?, ?, ?)`,
-
-        [
-          name,
-          email,
-          service,
-          message
-        ]
-
-      );
-
-
-    res.status(201).json({
-
-      success: true,
-
-      message:
-        "Your enquiry has been submitted successfully.",
-
-      enquiryId:
-        result.insertId
-
-    });
-
-
-  } catch (error) {
-
-    console.error(
-      "Database Error:",
-      error
+    const [result] = await db.execute(
+      `INSERT INTO enquiries (name, email, service, message)
+       VALUES (?, ?, ?, ?)`,
+      [name, email, service, message]
     );
 
-
-    res.status(500).json({
-
-      success: false,
-
-      message:
-        "Unable to save your enquiry."
-
+    res.status(201).json({
+      success: true,
+      message: "Your enquiry has been submitted successfully.",
+      enquiryId: result.insertId
     });
-
+  } catch (error) {
+    console.error("Database Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Unable to save your enquiry."
+    });
   }
-
 });
 
-
 module.exports = router;
-```
