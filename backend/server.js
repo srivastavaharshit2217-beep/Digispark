@@ -1,18 +1,24 @@
 ```javascript
-// DigiSpark Backend
-// Node.js + Express
+// ==========================================
+// DigiSpark Backend Server
+// ==========================================
 
 const express = require("express");
 const cors = require("cors");
 
 const app = express();
 
+
+// ==========================================
+// PORT
+// ==========================================
+
 const PORT = process.env.PORT || 5000;
 
 
-// ===============================
+// ==========================================
 // MIDDLEWARE
-// ===============================
+// ==========================================
 
 app.use(cors());
 
@@ -23,25 +29,37 @@ app.use(express.urlencoded({
 }));
 
 
-// ===============================
+// ==========================================
+// IMPORT ROUTES
+// ==========================================
+
+const enquiryRoutes = require("./routes/enquiries");
+
+
+// ==========================================
 // HOME / API STATUS
-// ===============================
+// ==========================================
 
 app.get("/", (req, res) => {
 
   res.json({
+
     success: true,
+
     message: "Welcome to DigiSpark API",
+
     tagline: "Spark Your Digital Future",
+
     status: "Backend is running"
+
   });
 
 });
 
 
-// ===============================
+// ==========================================
 // SERVICES API
-// ===============================
+// ==========================================
 
 app.get("/api/services", (req, res) => {
 
@@ -85,78 +103,28 @@ app.get("/api/services", (req, res) => {
 
   ];
 
+
   res.json({
+
     success: true,
+
     services: services
-  });
-
-});
-
-
-// ===============================
-// CONTACT / ENQUIRY API
-// ===============================
-
-app.post("/api/enquiries", (req, res) => {
-
-  const {
-    name,
-    email,
-    service,
-    message
-  } = req.body;
-
-
-  // Validation
-
-  if (!name || !email || !service || !message) {
-
-    return res.status(400).json({
-
-      success: false,
-
-      message: "Please fill all required fields."
-
-    });
-
-  }
-
-
-  // Temporary response
-  // Database will be connected later.
-
-  console.log("New DigiSpark Enquiry:");
-
-  console.log({
-    name,
-    email,
-    service,
-    message
-  });
-
-
-  res.status(201).json({
-
-    success: true,
-
-    message:
-      "Thank you! Your enquiry has been submitted successfully.",
-
-    data: {
-      name,
-      email,
-      service,
-      message
-    }
 
   });
 
 });
 
 
-// ===============================
+// ==========================================
+// ENQUIRY ROUTE
+// ==========================================
+
+app.use("/api/enquiries", enquiryRoutes);
+
+
+// ==========================================
 // 404 ERROR
-// ===============================
+// ==========================================
 
 app.use((req, res) => {
 
@@ -171,14 +139,14 @@ app.use((req, res) => {
 });
 
 
-// ===============================
+// ==========================================
 // START SERVER
-// ===============================
+// ==========================================
 
 app.listen(PORT, () => {
 
   console.log(
-    `DigiSpark server running on port ${PORT}`
+    `🚀 DigiSpark server running on port ${PORT}`
   );
 
 });
