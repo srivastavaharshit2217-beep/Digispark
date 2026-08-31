@@ -1,23 +1,18 @@
 ```javascript
-// DigiSpark Database Connection
-// MySQL
-
 const mysql = require("mysql2/promise");
 
 
-// ===============================
-// DATABASE CONFIGURATION
-// ===============================
-
 const pool = mysql.createPool({
 
-  host: process.env.DB_HOST || "localhost",
+  host: process.env.DB_HOST,
 
-  user: process.env.DB_USER || "root",
+  user: process.env.DB_USER,
 
-  password: process.env.DB_PASSWORD || "",
+  password: process.env.DB_PASSWORD,
 
-  database: process.env.DB_NAME || "digispark",
+  database: process.env.DB_NAME,
+
+  port: process.env.DB_PORT || 3306,
 
   waitForConnections: true,
 
@@ -27,37 +22,6 @@ const pool = mysql.createPool({
 
 });
 
-
-// ===============================
-// TEST DATABASE CONNECTION
-// ===============================
-
-async function testDatabase() {
-
-  try {
-
-    const connection = await pool.getConnection();
-
-    console.log("✅ DigiSpark database connected successfully.");
-
-    connection.release();
-
-  } catch (error) {
-
-    console.error(
-      "❌ Database connection failed:",
-      error.message
-    );
-
-  }
-
-}
-
-
-testDatabase();
-
-
-// Export database pool
 
 module.exports = pool;
 ```
