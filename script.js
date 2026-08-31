@@ -1,14 +1,12 @@
 ```javascript
 // ==========================================
-// DigiSpark Frontend JavaScript
+// DigiSpark JavaScript
 // ==========================================
 
 
-// ==========================================
-// BACKEND API URL
-// ==========================================
+// Backend API URL
+// Render par deploy karne ke baad is URL ko change karenge.
 
-// Local testing:
 const API_URL = "http://localhost:5000";
 
 
@@ -16,40 +14,58 @@ const API_URL = "http://localhost:5000";
 // MOBILE MENU
 // ==========================================
 
-const menuButton = document.querySelector(".menu-btn");
-const navLinks = document.querySelector(".nav-links");
+const menuButton =
+  document.querySelector(".menu-btn");
+
+const navLinks =
+  document.querySelector(".nav-links");
+
 
 if (menuButton && navLinks) {
 
-  menuButton.addEventListener("click", function () {
+  menuButton.addEventListener(
+    "click",
+    function () {
 
-    navLinks.classList.toggle("open");
+      navLinks.classList.toggle("open");
 
-  });
+    }
+  );
 
 }
 
 
-// Close menu after clicking a link
+// ==========================================
+// CLOSE MOBILE MENU
+// ==========================================
 
-document.querySelectorAll(".nav-links a").forEach(function (link) {
+document
+  .querySelectorAll(".nav-links a")
+  .forEach(function (link) {
 
-  link.addEventListener("click", function () {
+    link.addEventListener(
+      "click",
+      function () {
 
-    if (navLinks) {
-      navLinks.classList.remove("open");
-    }
+        if (navLinks) {
+
+          navLinks.classList.remove("open");
+
+        }
+
+      }
+    );
 
   });
-
-});
 
 
 // ==========================================
 // CURRENT YEAR
 // ==========================================
 
-const yearElement = document.getElementById("year");
+const yearElement =
+  document.getElementById("year");
+
 
 if (yearElement) {
 
@@ -77,24 +93,39 @@ if (contactForm) {
 
 
       const name =
-        document.getElementById("name").value.trim();
+        document
+          .getElementById("name")
+          .value
+          .trim();
+
 
       const email =
-        document.getElementById("email").value.trim();
+        document
+          .getElementById("email")
+          .value
+          .trim();
+
 
       const service =
-        document.getElementById("service").value;
+        document
+          .getElementById("service")
+          .value;
+
 
       const message =
-        document.getElementById("message").value.trim();
+        document
+          .getElementById("message")
+          .value
+          .trim();
+
 
       const formMessage =
-        document.getElementById("formMessage");
+        document.getElementById(
+          "formMessage"
+        );
 
 
-      // ========================================
-      // VALIDATION
-      // ========================================
+      // Validation
 
       if (
         !name ||
@@ -111,15 +142,11 @@ if (contactForm) {
       }
 
 
-      // Show loading message
-
       formMessage.textContent =
         "Sending your enquiry...";
 
 
-      // ========================================
-      // SEND DATA TO BACKEND
-      // ========================================
+      // Send data to backend
 
       try {
 
@@ -131,7 +158,8 @@ if (contactForm) {
               method: "POST",
 
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type":
+                  "application/json"
               },
 
               body: JSON.stringify({
@@ -154,10 +182,6 @@ if (contactForm) {
           await response.json();
 
 
-        // ======================================
-        // SUCCESS
-        // ======================================
-
         if (response.ok) {
 
           formMessage.textContent =
@@ -165,13 +189,7 @@ if (contactForm) {
 
           contactForm.reset();
 
-        }
-
-        // ======================================
-        // ERROR
-        // ======================================
-
-        else {
+        } else {
 
           formMessage.textContent =
             data.message ||
@@ -182,7 +200,11 @@ if (contactForm) {
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "Backend Error:",
+          error
+        );
+
 
         formMessage.textContent =
           "❌ Backend server is not connected.";
@@ -190,14 +212,13 @@ if (contactForm) {
       }
 
     }
-
   );
 
 }
 
 
 // ==========================================
-// CLOSE MOBILE MENU WHEN CLICKING OUTSIDE
+// CLOSE MENU WHEN CLICKING OUTSIDE
 // ==========================================
 
 document.addEventListener(
@@ -224,10 +245,14 @@ document.addEventListener(
 // ==========================================
 
 const cards =
-  document.querySelectorAll(".service-card");
+  document.querySelectorAll(
+    ".service-card"
+  );
 
 
-if ("IntersectionObserver" in window) {
+if (
+  "IntersectionObserver" in window
+) {
 
   const observer =
     new IntersectionObserver(
@@ -236,9 +261,12 @@ if ("IntersectionObserver" in window) {
         entries.forEach(
           function (entry) {
 
-            if (entry.isIntersecting) {
+            if (
+              entry.isIntersecting
+            ) {
 
-              entry.target.style.opacity = "1";
+              entry.target.style.opacity =
+                "1";
 
               entry.target.style.transform =
                 "translateY(0)";
@@ -255,19 +283,21 @@ if ("IntersectionObserver" in window) {
     );
 
 
-  cards.forEach(function (card) {
+  cards.forEach(
+    function (card) {
 
-    card.style.opacity = "0";
+      card.style.opacity = "0";
 
-    card.style.transform =
-      "translateY(20px)";
+      card.style.transform =
+        "translateY(20px)";
 
-    card.style.transition =
-      "opacity 0.6s ease, transform 0.6s ease";
+      card.style.transition =
+        "opacity 0.6s ease, transform 0.6s ease";
 
-    observer.observe(card);
+      observer.observe(card);
 
-  });
+    }
+  );
 
 }
 ```
