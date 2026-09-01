@@ -18,12 +18,20 @@ async function initializeDatabase() {
       id SERIAL PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
       email VARCHAR(150) NOT NULL,
+      phone VARCHAR(30),
       service VARCHAR(100) NOT NULL,
+      project_type VARCHAR(100),
+      budget VARCHAR(100),
       message TEXT NOT NULL,
       status VARCHAR(30) DEFAULT 'new',
       created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS phone VARCHAR(30)`);
+  await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS project_type VARCHAR(100)`);
+  await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS budget VARCHAR(100)`);
+
   console.log("PostgreSQL database initialized successfully.");
 }
 
