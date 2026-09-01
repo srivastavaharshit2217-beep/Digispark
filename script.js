@@ -28,6 +28,25 @@ document.addEventListener("click", function (event) {
 const yearElement = document.getElementById("year");
 if (yearElement) yearElement.textContent = new Date().getFullYear();
 
+// Make every service card tappable/clickable, while keeping its Learn More link.
+document.querySelectorAll(".service-card").forEach(function (card) {
+  const link = card.querySelector('a[href*="service.html"]');
+  if (!link) return;
+  card.style.cursor = "pointer";
+  card.setAttribute("role", "link");
+  card.setAttribute("tabindex", "0");
+  card.addEventListener("click", function (event) {
+    if (event.target.closest("a,button,input,select,textarea")) return;
+    window.location.href = link.href;
+  });
+  card.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      window.location.href = link.href;
+    }
+  });
+});
+
 // WhatsApp + Call lead buttons
 (function addLeadButtons() {
   const style = document.createElement("style");
