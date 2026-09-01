@@ -1,25 +1,44 @@
-// DigiSpark JavaScript
+// DigiSpark Frontend JavaScript
 
-const API_URL = "http://localhost:5000";
+// Production backend deployed on Render.
+const API_URL = "https://digispark-v0hl.onrender.com";
 
+// Mobile navigation
 const menuButton = document.querySelector(".menu-btn");
 const navLinks = document.querySelector(".nav-links");
 
 if (menuButton && navLinks) {
   menuButton.addEventListener("click", function () {
     navLinks.classList.toggle("open");
+    menuButton.setAttribute("aria-expanded", navLinks.classList.contains("open") ? "true" : "false");
   });
 }
 
 document.querySelectorAll(".nav-links a").forEach(function (link) {
   link.addEventListener("click", function () {
     if (navLinks) navLinks.classList.remove("open");
+    if (menuButton) menuButton.setAttribute("aria-expanded", "false");
   });
 });
 
+// Close mobile menu when clicking outside it
+document.addEventListener("click", function (event) {
+  if (
+    navLinks &&
+    menuButton &&
+    !navLinks.contains(event.target) &&
+    !menuButton.contains(event.target)
+  ) {
+    navLinks.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+  }
+});
+
+// Dynamic footer year
 const yearElement = document.getElementById("year");
 if (yearElement) yearElement.textContent = new Date().getFullYear();
 
+// Contact / enquiry form
 const contactForm = document.getElementById("contactForm");
 
 if (contactForm) {
@@ -31,13 +50,18 @@ if (contactForm) {
     const service = document.getElementById("service").value;
     const message = document.getElementById("message").value.trim();
     const formMessage = document.getElementById("formMessage");
+    const submitButton = contactForm.querySelector('button[type="submit"]');
 
     if (!name || !email || !service || !message) {
-      formMessage.textContent = "Please fill in all details.";
+      if (formMessage) formMessage.textContent = "Please fill in all details.";
       return;
     }
 
-    formMessage.textContent = "Sending your enquiry...";
+    if (formMessage) formMessage.textContent = "Sending your enquiry...";
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Sending...";
+    }
 
     try {
       const response = await fetch(`${API_URL}/api/enquiries`, {
@@ -48,38 +72,38 @@ if (contactForm) {
 
       const data = await response.json();
 
-      if (response.ok) {
-        formMessage.textContent = "✅ Enquiry submitted successfully!";
-        contactForm.reset();
-      } else {
-        formMessage.textContent = data.message || "Something went wrong.";
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to submit enquiry.");
       }
+
+      if (formMessage) {
+        formMessage.textContent = "✅ Enquiry submitted successfully! We will contact you soon.";
+      }
+      contactForm.reset();
     } catch (error) {
-      console.error("Backend Error:", error);
-      formMessage.textContent = "❌ Backend server is not connected.";
+      console.error("DigiSpark API Error:", error);
+      if (formMessage) {
+        formMessage.textContent = "❌ Unable to submit right now. Please try again.";
+      }
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Send Enquiry →";
+      }
     }
   });
 }
 
-document.addEventListener("click", function (event) {
-  if (
-    navLinks &&
-    menuButton &&
-    !navLinks.contains(event.target) &&
-    !menuButton.contains(event.target)
-  ) {
-    navLinks.classList.remove("open");
-  }
-});
-
+// Service-card reveal animation
 const cards = document.querySelectorAll(".service-card");
 
-if ("IntersectionObserver" in window) {
+if ("IntersectionObserver" in window && cards.length) {
   const observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
         entry.target.style.opacity = "1";
         entry.target.style.transform = "translateY(0)";
+        observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.15 });
