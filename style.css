@@ -84,3 +84,16 @@ footer { padding:30px 0; background:var(--dark-maroon); color:var(--white); }
   .checks { grid-template-columns:1fr; }
   .footer { flex-direction:column; align-items:flex-start; }
 }
+
+/* Step 1: DigiSpark brand header */
+.header { background:#080808; border-bottom:1px solid #d4af37; }
+.logo { min-width:92px; }
+.logo-img { width:92px; height:70px; object-fit:contain; display:block; border-radius:4px; }
+.nav-links a { color:#ffffff; }
+.nav-links a:hover { color:#d4af37; }
+.nav-btn { background:#d4af37; color:#080808!important; }
+.menu-btn { color:#ffffff; }
+@media (max-width:800px) {
+  .nav-links { top:76px; background:#080808; border-bottom:1px solid #d4af37; }
+  .nav-links a { color:#ffffff; }
+}
