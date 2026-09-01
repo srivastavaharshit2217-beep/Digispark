@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const db = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -9,6 +10,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const enquiryRoutes = require("./routes/enquiries");
+
+async function initializeDatabase() {
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS enquiries (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      email VARCHAR(150) NOT NULL,
+      service VARCHAR(100) NOT NULL,
+      message TEXT NOT NULL,
+      status VARCHAR(30) DEFAULT 'new',
+      created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  console.log("PostgreSQL database initialized successfully.");
+}
 
 app.get("/", (req, res) => {
   res.json({
@@ -42,6 +58,13 @@ app.use((req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`DigiSpark server running on port ${PORT}`);
-});
+initializeDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`DigiSpark server running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Database initialization failed:", error);
+    process.exit(1);
+  });
