@@ -3,7 +3,6 @@ const db = require("../db");
 
 const router = express.Router();
 
-// Simple admin dashboard API. Protect this route with ADMIN_KEY in production.
 router.get("/enquiries", async (req, res) => {
   try {
     const adminKey = process.env.ADMIN_KEY;
@@ -12,7 +11,7 @@ router.get("/enquiries", async (req, res) => {
     }
 
     const result = await db.query(
-      `SELECT id, name, email, service, message, status, created_at
+      `SELECT id, name, email, phone, service, project_type, budget, message, status, created_at
        FROM enquiries ORDER BY created_at DESC LIMIT 100`
     );
 
