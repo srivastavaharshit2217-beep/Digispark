@@ -24,6 +24,7 @@ async function initializeDatabase() {
       budget VARCHAR(100),
       message TEXT NOT NULL,
       status VARCHAR(30) DEFAULT 'new',
+      tracking_token VARCHAR(80) UNIQUE,
       created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -31,6 +32,8 @@ async function initializeDatabase() {
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS phone VARCHAR(30)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS project_type VARCHAR(100)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS budget VARCHAR(100)`);
+  await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS tracking_token VARCHAR(80)`);
+  await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS enquiries_tracking_token_idx ON enquiries(tracking_token) WHERE tracking_token IS NOT NULL`);
 
   console.log("PostgreSQL database initialized successfully.");
 }
