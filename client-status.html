@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="description" content="Track your DigiSpark project enquiry status.">
+  <title>DigiSpark | Track Enquiry</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .status-page{min-height:78vh;display:grid;place-items:center;padding:70px 20px}
+    .status-box{width:min(720px,100%);background:#111;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:36px;box-shadow:0 20px 70px rgba(0,0,0,.18)}
+    .status-box h1{margin:8px 0 12px;font-size:clamp(32px,6vw,54px)}
+    .status-box>p{color:#b9b9b9;line-height:1.7}
+    .track-form{display:flex;gap:10px;margin-top:24px}.track-form input{flex:1;padding:15px 16px;border-radius:12px;border:1px solid #333;background:#1b1b1b;color:#fff;outline:none}.track-form input:focus{border-color:#f5b72b}
+    .track-result{margin-top:28px}.track-card{background:#181818;border:1px solid #2a2a2a;border-radius:18px;padding:24px}.track-top{display:flex;justify-content:space-between;gap:16px;align-items:center}.track-top h2{margin:0}.status-pill{padding:8px 12px;border-radius:999px;background:#f5b72b;color:#111;font-weight:800;font-size:13px;text-transform:capitalize}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:28px}.step{padding:14px 8px;text-align:center;border:1px solid #303030;border-radius:12px;color:#777;font-size:13px}.step.active{border-color:#f5b72b;color:#fff;background:#211c10}.step.done{color:#f5b72b}.track-meta{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}.track-meta div{padding:14px;background:#121212;border-radius:12px}.track-meta small{display:block;color:#777;margin-bottom:5px}.error{color:#ff8c8c;margin-top:18px}
+    @media(max-width:600px){.status-box{padding:24px}.track-form{flex-direction:column}.steps{grid-template-columns:1fr 1fr}.track-meta{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="header"><div class="container nav"><a href="index.html" class="logo"><span>DS</span><b>DIGI</b><strong>SPARK</strong></a><nav class="nav-links"><a href="index.html">Home</a><a href="services.html">Services</a><a href="index.html#contact" class="nav-btn">Get Started</a></nav></div></header>
+<main class="status-page"><section class="status-box"><p class="tag">CLIENT PORTAL</p><h1>Track your enquiry.</h1><p>Enter the private tracking token from your DigiSpark enquiry confirmation to see the latest project status.</p><form id="trackForm" class="track-form"><input id="token" type="text" minlength="48" maxlength="48" placeholder="Enter your 48-character tracking token" autocomplete="off" required><button class="btn primary" type="submit">Track →</button></form><p id="trackMessage" class="error"></p><div id="trackResult" class="track-result"></div></section></main>
+<footer><div class="container footer"><div class="logo"><span>DS</span><b>DIGI</b><strong>SPARK</strong></div><p>© <span id="year"></span> DigiSpark. Spark Your Digital Future.</p></div></footer>
+<script>
+const API_URL="https://digispark-v0hl.onrender.com";
+const steps=["new","contacted","in_progress","completed"];
+const labels={new:"New",contacted:"Contacted",in_progress:"In Progress",completed:"Completed",cancelled:"Cancelled"};
+document.getElementById("year").textContent=new Date().getFullYear();
+const params=new URLSearchParams(location.search); if(params.get("token")) document.getElementById("token").value=params.get("token");
+function esc(value){const d=document.createElement("div");d.textContent=value??"";return d.innerHTML}
+function render(e){
+  const current=steps.indexOf(e.status);
+  const cancelled=e.status==="cancelled";
+  document.getElementById("trackResult").innerHTML=`<div class="track-card"><div class="track-top"><div><small style="color:#777">Enquiry #${esc(e.id)}</small><h2>${esc(e.name)}</h2></div><span class="status-pill">${esc(labels[e.status]||e.status)}</span></div>${cancelled?`<p class="error">This enquiry has been cancelled. Please contact DigiSpark if you need assistance.</p>`:`<div class="steps">${steps.map((s,i)=>`<div class="step ${i<current?'done ':''}${i===current?'active':''}">${i<current?'✓ ':''}${labels[s]}</div>`).join("")}</div>`}<div class="track-meta"><div><small>Service</small><b>${esc(e.service)}</b></div><div><small>Project Type</small><b>${esc(e.project_type||"—")}</b></div><div><small>Submitted</small><b>${new Date(e.created_at).toLocaleString()}</b></div><div><small>Next Step</small><b>${cancelled?'Contact DigiSpark':current<0?'Contact DigiSpark':current>=3?'Project completed':'DigiSpark will update your enquiry as it progresses'}</b></div></div></div>`;
+}
+document.getElementById("trackForm").addEventListener("submit",async function(ev){ev.preventDefault();const token=document.getElementById("token").value.trim().toLowerCase();const msg=document.getElementById("trackMessage");const result=document.getElementById("trackResult");msg.textContent="";result.innerHTML="Loading...";try{const r=await fetch(`${API_URL}/api/enquiries/status/${encodeURIComponent(token)}`);const d=await r.json();if(!r.ok)throw new Error(d.message||"Unable to find enquiry.");render(d.enquiry);history.replaceState(null,"",`client-status.html?token=${encodeURIComponent(token)}`)}catch(err){result.innerHTML="";msg.textContent="❌ "+err.message}});
+</script>
+</body></html>
