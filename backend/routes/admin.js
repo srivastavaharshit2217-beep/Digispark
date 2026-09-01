@@ -16,7 +16,7 @@ router.get("/enquiries", async (req, res) => {
   try {
     if (!checkAdmin(req, res)) return;
     const result = await db.query(
-      `SELECT id, name, email, phone, service, project_type, budget, message, status, created_at
+      `SELECT id, name, email, phone, service, project_type, budget, message, status, tracking_token, created_at
        FROM enquiries ORDER BY created_at DESC LIMIT 100`
     );
     res.json({ success: true, count: result.rows.length, enquiries: result.rows });
