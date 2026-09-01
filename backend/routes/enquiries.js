@@ -2,15 +2,33 @@ const express = require("express");
 const db = require("../db");
 
 const router = express.Router();
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 router.post("/", async (req, res) => {
   try {
-    const { name, email, service, message } = req.body;
+    const name = String(req.body.name || "").trim();
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const service = String(req.body.service || "").trim();
+    const message = String(req.body.message || "").trim();
 
     if (!name || !email || !service || !message) {
       return res.status(400).json({
         success: false,
         message: "Please fill all required fields."
+      });
+    }
+
+    if (name.length > 100 || email.length > 150 || service.length > 100 || message.length > 5000) {
+      return res.status(400).json({
+        success: false,
+        message: "One or more fields are too long."
+      });
+    }
+
+    if (!EMAIL_PATTERN.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address."
       });
     }
 
