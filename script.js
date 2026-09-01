@@ -121,7 +121,8 @@ if (contactForm) {
 
       const whatsappMessage = `Hello DigiSpark, I submitted an enquiry.\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${service}\nProject Type: ${projectType}\nBudget: ${budget}\nProject: ${message}`;
       const whatsappUrl = `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(whatsappMessage)}`;
-      if (formMessage) formMessage.innerHTML = `✅ Enquiry #${data.enquiryId} submitted successfully! <a href="${whatsappUrl}" target="_blank" rel="noopener" style="color:#a87508;font-weight:800">Continue on WhatsApp →</a>`;
+      const trackingUrl = `client-status.html?token=${encodeURIComponent(data.trackingToken || "")}`;
+      if (formMessage) formMessage.innerHTML = `✅ Enquiry #${data.enquiryId} submitted successfully!<br><a href="${trackingUrl}" style="color:#a87508;font-weight:800">Track Enquiry Status →</a> &nbsp; <a href="${whatsappUrl}" target="_blank" rel="noopener" style="color:#a87508;font-weight:800">Continue on WhatsApp →</a>`;
       contactForm.reset();
     } catch (error) {
       console.error("DigiSpark API Error:", error);
