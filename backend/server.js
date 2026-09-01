@@ -5,9 +5,9 @@ const db = require("./db");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: true }));
+app.use(express.json({ limit: "100kb" }));
+app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 
 const enquiryRoutes = require("./routes/enquiries");
 
@@ -33,6 +33,16 @@ app.get("/", (req, res) => {
     tagline: "Spark Your Digital Future",
     status: "Backend is running"
   });
+});
+
+app.get("/api/health", async (req, res) => {
+  try {
+    await db.query("SELECT 1");
+    res.json({ success: true, status: "healthy", database: "connected" });
+  } catch (error) {
+    console.error("Health check database error:", error);
+    res.status(503).json({ success: false, status: "unhealthy", database: "disconnected" });
+  }
 });
 
 app.get("/api/services", (req, res) => {
