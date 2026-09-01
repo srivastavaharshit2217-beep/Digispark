@@ -1,5 +1,6 @@
 // DigiSpark Frontend JavaScript
 const API_URL = "https://digispark-v0hl.onrender.com";
+const BUSINESS_PHONE = "919236368939";
 
 // Mobile navigation
 const menuButton = document.querySelector(".menu-btn");
@@ -27,7 +28,30 @@ document.addEventListener("click", function (event) {
 const yearElement = document.getElementById("year");
 if (yearElement) yearElement.textContent = new Date().getFullYear();
 
-// Add professional lead fields without changing the existing HTML structure.
+// WhatsApp + Call lead buttons
+(function addLeadButtons() {
+  const style = document.createElement("style");
+  style.textContent = `
+    .ds-lead-actions{position:fixed;right:20px;bottom:20px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+    .ds-lead-btn{display:flex;align-items:center;gap:9px;padding:12px 16px;border-radius:999px;font:800 13px Inter,Arial,sans-serif;text-decoration:none;box-shadow:0 10px 30px rgba(0,0,0,.22);transition:.25s ease;border:1px solid rgba(255,255,255,.15)}
+    .ds-lead-btn:hover{transform:translateY(-3px);box-shadow:0 15px 35px rgba(0,0,0,.28)}
+    .ds-wa{background:#25D366;color:#fff}.ds-call{background:#111;color:#fff}
+    .ds-lead-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;font-size:15px}
+    .ds-wa .ds-lead-icon{background:rgba(255,255,255,.18)}.ds-call .ds-lead-icon{background:#f5b72b;color:#111}
+    @media(max-width:600px){.ds-lead-actions{right:12px;bottom:12px}.ds-lead-btn{width:48px;height:48px;padding:0;justify-content:center;border-radius:50%}.ds-lead-btn span:last-child{display:none}.ds-lead-icon{width:30px;height:30px}}
+  `;
+  document.head.appendChild(style);
+
+  const wrap = document.createElement("div");
+  wrap.className = "ds-lead-actions";
+  wrap.innerHTML = `
+    <a class="ds-lead-btn ds-wa" href="https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent("Hello DigiSpark, I want to discuss a digital project.")}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><span class="ds-lead-icon">☘</span><span>WhatsApp</span></a>
+    <a class="ds-lead-btn ds-call" href="tel:+${BUSINESS_PHONE}" aria-label="Call DigiSpark"><span class="ds-lead-icon">☎</span><span>Call Now</span></a>
+  `;
+  document.body.appendChild(wrap);
+})();
+
+// Contact / enquiry form
 const contactForm = document.getElementById("contactForm");
 if (contactForm) {
   const serviceField = document.getElementById("service");
@@ -69,7 +93,6 @@ if (contactForm) {
 
   contactForm.addEventListener("submit", async function (event) {
     event.preventDefault();
-
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const phone = document.getElementById("phone").value.trim();
@@ -84,41 +107,27 @@ if (contactForm) {
       if (formMessage) formMessage.textContent = "Please fill in all details.";
       return;
     }
-
     if (formMessage) formMessage.textContent = "Sending your enquiry...";
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.textContent = "Sending...";
-    }
+    if (submitButton) { submitButton.disabled = true; submitButton.textContent = "Sending..."; }
 
     try {
       const response = await fetch(`${API_URL}/api/enquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          service,
-          project_type: projectType,
-          budget,
-          message
-        })
+        body: JSON.stringify({ name, email, phone, service, project_type: projectType, budget, message })
       });
-
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Unable to submit enquiry.");
 
-      if (formMessage) formMessage.textContent = `✅ Enquiry #${data.enquiryId} submitted successfully! We will contact you soon.`;
+      const whatsappMessage = `Hello DigiSpark, I submitted an enquiry.\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${service}\nProject Type: ${projectType}\nBudget: ${budget}\nProject: ${message}`;
+      const whatsappUrl = `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(whatsappMessage)}`;
+      if (formMessage) formMessage.innerHTML = `✅ Enquiry #${data.enquiryId} submitted successfully! <a href="${whatsappUrl}" target="_blank" rel="noopener" style="color:#a87508;font-weight:800">Continue on WhatsApp →</a>`;
       contactForm.reset();
     } catch (error) {
       console.error("DigiSpark API Error:", error);
-      if (formMessage) formMessage.textContent = "❌ Unable to submit right now. Please try again.";
+      if (formMessage) formMessage.textContent = "❌ Unable to submit right now. Please try again or contact us on WhatsApp.";
     } finally {
-      if (submitButton) {
-        submitButton.disabled = false;
-        submitButton.textContent = "Send Enquiry →";
-      }
+      if (submitButton) { submitButton.disabled = false; submitButton.textContent = "Send Enquiry →"; }
     }
   });
 }
@@ -135,7 +144,6 @@ if ("IntersectionObserver" in window && cards.length) {
       }
     });
   }, { threshold: 0.15 });
-
   cards.forEach(function (card) {
     card.style.opacity = "0";
     card.style.transform = "translateY(20px)";
