@@ -1,4 +1,5 @@
 const express = require("express");
+const crypto = require("crypto");
 const db = require("../db");
 
 const router = express.Router();
@@ -30,21 +31,48 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ success: false, message: "Please enter a valid phone number." });
     }
 
+    const trackingToken = crypto.randomBytes(24).toString("hex");
     const result = await db.query(
-      `INSERT INTO enquiries (name, email, phone, service, project_type, budget, message)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id`,
-      [name, email, phone, service, projectType, budget, message]
+      `INSERT INTO enquiries (name, email, phone, service, project_type, budget, message, tracking_token)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING id, tracking_token`,
+      [name, email, phone, service, projectType, budget, message, trackingToken]
     );
 
     res.status(201).json({
       success: true,
       message: "Your enquiry has been submitted successfully.",
-      enquiryId: result.rows[0].id
+      enquiryId: result.rows[0].id,
+      trackingToken: result.rows[0].tracking_token
     });
   } catch (error) {
     console.error("Database Error:", error);
     res.status(500).json({ success: false, message: "Unable to save your enquiry." });
+  }
+});
+
+// Public client status lookup. The random token is required; no admin key or email is exposed.
+router.get("/status/:token", async (req, res) => {
+  try {
+    const token = String(req.params.token || "").trim();
+    if (!/^[a-f0-9]{48}$/.test(token)) {
+      return res.status(400).json({ success: false, message: "Invalid tracking link." });
+    }
+
+    const result = await db.query(
+      `SELECT id, name, service, project_type, status, created_at
+       FROM enquiries WHERE tracking_token = $1 LIMIT 1`,
+      [token]
+    );
+
+    if (!result.rowCount) {
+      return res.status(404).json({ success: false, message: "Enquiry not found." });
+    }
+
+    res.json({ success: true, enquiry: result.rows[0] });
+  } catch (error) {
+    console.error("Status lookup error:", error);
+    res.status(500).json({ success: false, message: "Unable to load enquiry status." });
   }
 });
 
