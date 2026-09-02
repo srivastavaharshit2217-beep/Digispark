@@ -1,3 +1,13 @@
 /* DigiSpark footer background */
 footer{background:#000!important;color:#fff!important;border-top:1px solid #222!important}
 footer .footer{background:#000!important}
+
+/* Homepage conversion / trust signals */
+.hero .buttons{margin-bottom:18px}
+.hero .buttons::after{content:"✓ Mobile-ready  •  ✓ Business-focused  •  ✓ One digital partner";display:block;margin-top:16px;color:#999;font-size:11px;font-weight:700;letter-spacing:.2px}
+.services-section .section-heading-row{position:relative}
+.services-section .view-all{white-space:nowrap}
+.about .about-panel .about-card.wide{border-color:#a87508}
+.contact{position:relative}
+.contact::before{content:"Clear requirements  •  Practical solutions  •  Direct communication";display:block;text-align:center;color:#777;font-size:11px;font-weight:700;letter-spacing:.15px;margin-bottom:18px}
+@media(max-width:600px){.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}}
