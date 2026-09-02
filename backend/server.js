@@ -4,10 +4,44 @@ const db = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "https://digispark-frontend.onrender.com";
 
-app.use(cors({ origin: true }));
+// Basic security headers.
+app.disable("x-powered-by");
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+});
+
+app.use(cors({ origin: FRONTEND_ORIGIN, methods: ["GET", "POST", "PATCH"], allowedHeaders: ["Content-Type", "x-admin-key"] }));
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true, limit: "100kb" }));
+
+// Lightweight in-memory rate limiting for public endpoints.
+const rateBuckets = new Map();
+function rateLimit({ windowMs, max, message }) {
+  return (req, res, next) => {
+    const now = Date.now();
+    const key = `${req.ip}:${req.path}`;
+    const current = rateBuckets.get(key);
+    if (!current || now - current.start >= windowMs) {
+      rateBuckets.set(key, { start: now, count: 1 });
+      return next();
+    }
+    current.count += 1;
+    if (current.count > max) return res.status(429).json({ success: false, message });
+    next();
+  };
+}
+
+const publicRateLimit = rateLimit({ windowMs: 60 * 1000, max: 60, message: "Too many requests. Please try again in a minute." });
+const enquiryRateLimit = rateLimit({ windowMs: 10 * 60 * 1000, max: 5, message: "Too many enquiries from this connection. Please try again later." });
+const aiRateLimit = rateLimit({ windowMs: 60 * 1000, max: 15, message: "Too many AI requests. Please wait a moment and try again." });
+
+app.use("/api", publicRateLimit);
 
 const enquiryRoutes = require("./routes/enquiries");
 const adminRoutes = require("./routes/admin");
@@ -73,48 +107,25 @@ app.get("/api/services", (req, res) => {
   ] });
 });
 
-app.post("/api/ai/chat", async (req, res) => {
+app.post("/api/ai/chat", aiRateLimit, async (req, res) => {
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(503).json({ success: false, message: "DigiSpark AI is not configured yet. Please contact DigiSpark on WhatsApp." });
-    }
-
+    if (!process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, message: "DigiSpark AI is not configured yet. Please contact DigiSpark on WhatsApp." });
     const incoming = Array.isArray(req.body?.messages) ? req.body.messages : [];
-    const messages = incoming
-      .filter(item => item && (item.role === "user" || item.role === "assistant") && typeof item.content === "string")
-      .slice(-10)
-      .map(item => ({ role: item.role, content: item.content.slice(0, 4000) }));
-
-    if (!messages.length || !messages.some(item => item.role === "user")) {
-      return res.status(400).json({ success: false, message: "Please enter a question." });
-    }
+    const messages = incoming.filter(item => item && (item.role === "user" || item.role === "assistant") && typeof item.content === "string").slice(-10).map(item => ({ role: item.role, content: item.content.slice(0, 4000) }));
+    if (!messages.length || !messages.some(item => item.role === "user")) return res.status(400).json({ success: false, message: "Please enter a question." });
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
-        instructions: DIGISPARK_AI_INSTRUCTIONS,
-        input: messages,
-        store: false,
-        max_output_tokens: 700
-      })
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.OPENAI_API_KEY}` },
+      body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-5.6-luna", instructions: DIGISPARK_AI_INSTRUCTIONS, input: messages, store: false, max_output_tokens: 700 })
     });
-
     const data = await response.json();
     if (!response.ok) {
       console.error("OpenAI API error:", data);
       return res.status(502).json({ success: false, message: "AI is temporarily unavailable. Please try again or contact DigiSpark on WhatsApp." });
     }
-
     const answer = typeof data.output_text === "string" ? data.output_text.trim() : "";
-    if (!answer) {
-      return res.status(502).json({ success: false, message: "AI could not generate a reply. Please try again." });
-    }
-
+    if (!answer) return res.status(502).json({ success: false, message: "AI could not generate a reply. Please try again." });
     res.json({ success: true, message: answer });
   } catch (error) {
     console.error("DigiSpark AI error:", error);
@@ -122,9 +133,8 @@ app.post("/api/ai/chat", async (req, res) => {
   }
 });
 
-app.use("/api/enquiries", enquiryRoutes);
+app.use("/api/enquiries", enquiryRateLimit, enquiryRoutes);
 app.use("/api/admin", adminRoutes);
-
 app.use((req, res) => res.status(404).json({ success: false, message: "API route not found." }));
 
 initializeDatabase().then(() => app.listen(PORT, () => console.log(`DigiSpark server running on port ${PORT}`)))
@@ -146,12 +156,10 @@ async function initializeDatabase() {
       created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
     )
   `);
-
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS phone VARCHAR(30)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS project_type VARCHAR(100)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS budget VARCHAR(100)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS tracking_token VARCHAR(80)`);
   await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS enquiries_tracking_token_idx ON enquiries(tracking_token) WHERE tracking_token IS NOT NULL`);
-
   console.log("PostgreSQL database initialized successfully.");
 }
