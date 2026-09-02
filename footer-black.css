@@ -10,4 +10,31 @@ footer .footer{background:#000!important}
 .about .about-panel .about-card.wide{border-color:#a87508}
 .contact{position:relative}
 .contact::before{content:"Clear requirements  •  Practical solutions  •  Direct communication";display:block;text-align:center;color:#777;font-size:11px;font-weight:700;letter-spacing:.15px;margin-bottom:18px}
-@media(max-width:600px){.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}}
+
+/* Step 3 — honest, in-house portfolio showcase */
+.portfolio-section .section-title h2{font-size:0}
+.portfolio-section .section-title h2::after{content:"Our digital work & capability showcase.";font-size:clamp(32px,5vw,52px);line-height:1.1;letter-spacing:normal;display:block}
+.portfolio-section .section-title>p:last-child{font-size:0}
+.portfolio-section .section-title>p:last-child::after{content:"A transparent showcase of DigiSpark's own builds and service capabilities — no invented clients or results.";font-size:16px;line-height:1.6;display:block;color:#999}
+.portfolio-card .portfolio-number{font-size:0}
+.portfolio-card .portfolio-number::after{font-size:11px;color:#777;letter-spacing:1.5px}
+.portfolio-card:nth-child(1) .portfolio-number::after{content:"01 / IN-HOUSE BUILD"}
+.portfolio-card:nth-child(2) .portfolio-number::after{content:"02 / SERVICE SYSTEM"}
+.portfolio-card:nth-child(3) .portfolio-number::after{content:"03 / AI EXPERIENCE"}
+.portfolio-card:nth-child(4) .portfolio-number::after{content:"04 / BUSINESS SYSTEM"}
+.portfolio-card h3{font-size:0}
+.portfolio-card h3::after{font-size:20px;line-height:1.3;display:block}
+.portfolio-card:nth-child(1) h3::after{content:"DigiSpark Website"}
+.portfolio-card:nth-child(2) h3::after{content:"Service Experience System"}
+.portfolio-card:nth-child(3) h3::after{content:"DigiSpark AI Assistant"}
+.portfolio-card:nth-child(4) h3::after{content:"Enquiry & Tracking System"}
+.portfolio-card p{font-size:0}
+.portfolio-card p::after{font-size:14px;line-height:1.6;display:block;color:#999}
+.portfolio-card:nth-child(1) p::after{content:"Responsive agency website built to present DigiSpark services clearly across mobile, tablet and desktop."}
+.portfolio-card:nth-child(2) p::after{content:"Service-specific detail pages with tools, process information and a clear path to enquiry."}
+.portfolio-card:nth-child(3) p::after{content:"Business-focused AI chat experience designed to answer common DigiSpark service questions."}
+.portfolio-card:nth-child(4) p::after{content:"Digital enquiry flow with customer requirements and enquiry-status tracking support."}
+.portfolio-card a{font-size:0}
+.portfolio-card a::after{content:"Explore Service →";font-size:13px}
+
+@media(max-width:600px){.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}}
