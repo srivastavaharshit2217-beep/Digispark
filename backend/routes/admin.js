@@ -1,10 +1,30 @@
 const express = require("express");
 const crypto = require("crypto");
 const db = require("../db");
+const firebaseAdmin = require("firebase-admin");
 
 const router = express.Router();
 const SESSION_COOKIE = "ds_admin_session";
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+
+let firebaseAuth = null;
+try {
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  if (projectId && clientEmail && privateKey) {
+    firebaseAdmin.initializeApp({
+      credential: firebaseAdmin.credential.cert({
+        projectId,
+        clientEmail,
+        privateKey: privateKey.replace(/\\n/g, "\n")
+      })
+    });
+    firebaseAuth = firebaseAdmin.auth();
+  }
+} catch (error) {
+  console.error("Firebase Admin initialization error:", error.message);
+}
 
 function timingSafeEqual(a, b) {
   const aa = Buffer.from(String(a));
@@ -26,24 +46,46 @@ function parseCookies(req) {
   }));
 }
 
-function checkAdmin(req, res) {
+function checkLegacySession(req) {
   const secret = process.env.ADMIN_KEY;
   const raw = parseCookies(req)[SESSION_COOKIE] || "";
   const [timestamp, token] = raw.split(".");
   const time = Number(timestamp);
-  const valid = secret && Number.isFinite(time) && Date.now() - time >= 0 && Date.now() - time < SESSION_TTL_MS && timingSafeEqual(token || "", sessionToken(time));
-  if (!valid) {
-    res.status(401).json({ success: false, message: "Unauthorized." });
-    return false;
+  return Boolean(secret && Number.isFinite(time) && Date.now() - time >= 0 && Date.now() - time < SESSION_TTL_MS && timingSafeEqual(token || "", sessionToken(time)));
+}
+
+async function checkAdmin(req, res) {
+  const authHeader = req.headers.authorization || "";
+  if (authHeader.startsWith("Bearer ")) {
+    if (!firebaseAuth) {
+      res.status(503).json({ success: false, message: "Firebase Admin authentication is not configured on the server." });
+      return false;
+    }
+    try {
+      const decoded = await firebaseAuth.verifyIdToken(authHeader.slice(7), true);
+      const allowedEmail = (process.env.FIREBASE_ADMIN_EMAIL || "").trim().toLowerCase();
+      if (!decoded.email || !decoded.email_verified || !allowedEmail || decoded.email.toLowerCase() !== allowedEmail) {
+        res.status(403).json({ success: false, message: "This Firebase account is not authorized for DigiSpark Admin." });
+        return false;
+      }
+      req.adminUser = decoded;
+      return true;
+    } catch (error) {
+      res.status(401).json({ success: false, message: "Invalid or expired Firebase session." });
+      return false;
+    }
   }
-  return true;
+
+  if (checkLegacySession(req)) return true;
+  res.status(401).json({ success: false, message: "Unauthorized." });
+  return false;
 }
 
 router.post("/login", (req, res) => {
   const loginId = process.env.ADMIN_LOGIN_ID;
   const password = process.env.ADMIN_LOGIN_PASSWORD;
   if (!loginId || !password || !process.env.ADMIN_KEY) {
-    return res.status(503).json({ success: false, message: "Admin login is not configured on the server." });
+    return res.status(503).json({ success: false, message: "Legacy admin login is not configured." });
   }
   const { id, password: suppliedPassword } = req.body || {};
   if (!timingSafeEqual(id || "", loginId) || !timingSafeEqual(suppliedPassword || "", password)) {
@@ -55,19 +97,19 @@ router.post("/login", (req, res) => {
   res.json({ success: true, message: "Admin login successful." });
 });
 
-router.post("/logout", (req, res) => {
+router.post("/logout", async (req, res) => {
   res.setHeader("Set-Cookie", `${SESSION_COOKIE}=; Max-Age=0; Path=/api/admin; HttpOnly; Secure; SameSite=None`);
   res.json({ success: true });
 });
 
-router.get("/session", (req, res) => {
-  if (!checkAdmin(req, res)) return;
-  res.json({ success: true, authenticated: true });
+router.get("/session", async (req, res) => {
+  if (!await checkAdmin(req, res)) return;
+  res.json({ success: true, authenticated: true, email: req.adminUser?.email || null });
 });
 
 router.get("/enquiries", async (req, res) => {
   try {
-    if (!checkAdmin(req, res)) return;
+    if (!await checkAdmin(req, res)) return;
     const result = await db.query(
       `SELECT id, name, email, phone, service, project_type, budget, message, status, tracking_token, created_at
        FROM enquiries ORDER BY created_at DESC LIMIT 100`
@@ -81,7 +123,7 @@ router.get("/enquiries", async (req, res) => {
 
 router.get("/analytics", async (req, res) => {
   try {
-    if (!checkAdmin(req, res)) return;
+    if (!await checkAdmin(req, res)) return;
     const [summary, statuses, services, monthly] = await Promise.all([
       db.query(`SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE status='new')::int AS new_leads, COUNT(*) FILTER (WHERE status IN ('contacted','in_progress'))::int AS active_leads, COUNT(*) FILTER (WHERE status='completed')::int AS completed_leads, COUNT(*) FILTER (WHERE status='cancelled')::int AS cancelled_leads FROM enquiries`),
       db.query(`SELECT status, COUNT(*)::int AS count FROM enquiries GROUP BY status ORDER BY count DESC`),
@@ -100,7 +142,7 @@ router.get("/analytics", async (req, res) => {
 
 router.patch("/enquiries/:id", async (req, res) => {
   try {
-    if (!checkAdmin(req, res)) return;
+    if (!await checkAdmin(req, res)) return;
     const allowed = ["new", "contacted", "in_progress", "completed", "cancelled"];
     const { status } = req.body;
     if (!allowed.includes(status)) return res.status(400).json({ success: false, message: "Invalid status." });
