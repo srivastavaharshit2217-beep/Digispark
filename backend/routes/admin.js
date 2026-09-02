@@ -5,7 +5,8 @@ const router = express.Router();
 
 function checkAdmin(req, res) {
   const adminKey = process.env.ADMIN_KEY;
-  if (adminKey && req.get("x-admin-key") !== adminKey) {
+  // Never allow admin access when the secret is missing.
+  if (!adminKey || req.get("x-admin-key") !== adminKey) {
     res.status(401).json({ success: false, message: "Unauthorized." });
     return false;
   }
