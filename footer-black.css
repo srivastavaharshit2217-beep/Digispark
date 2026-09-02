@@ -37,4 +37,9 @@ footer .footer{background:#000!important}
 .portfolio-card a{font-size:0}
 .portfolio-card a::after{content:"Explore Service →";font-size:13px}
 
+/* Step 8 — lightweight rendering and animation optimizations */
+.services-section,.about,.portfolio-section,.testimonials-section,.industries-section,.technologies-section,.faq-section,.contact{content-visibility:auto;contain-intrinsic-size:1px 700px}
+.service-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article,.about-card{will-change:transform}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.service-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article,.about-card{transition:none!important;transform:none!important}.service-card::before,.portfolio-card::after,.industries-grid article::after,.tech-grid article::after{transition:none!important}}
+
 @media(max-width:600px){.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}}
