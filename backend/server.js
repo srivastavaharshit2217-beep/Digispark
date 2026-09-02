@@ -6,7 +6,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "https://digispark-frontend.onrender.com";
 
-// Basic security headers.
 app.disable("x-powered-by");
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -16,11 +15,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({ origin: FRONTEND_ORIGIN, methods: ["GET", "POST", "PATCH"], allowedHeaders: ["Content-Type", "x-admin-key"] }));
+app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true, methods: ["GET", "POST", "PATCH"], allowedHeaders: ["Content-Type"] }));
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 
-// Lightweight in-memory rate limiting for public endpoints.
 const rateBuckets = new Map();
 function rateLimit({ windowMs, max, message }) {
   return (req, res, next) => {
@@ -87,25 +85,16 @@ IMPORTANT RULES:
 - If you do not know something specific about DigiSpark, say so honestly and suggest contacting DigiSpark directly.
 `;
 
-app.get("/", (req, res) => {
-  res.json({ success: true, message: "Welcome to DigiSpark API", tagline: "Spark Your Digital Future", status: "Backend is running" });
-});
-
-app.get("/api/health", async (req, res) => {
-  try { await db.query("SELECT 1"); res.json({ success: true, status: "healthy", database: "connected" }); }
-  catch (error) { console.error("Health check database error:", error); res.status(503).json({ success: false, status: "unhealthy", database: "disconnected" }); }
-});
-
-app.get("/api/services", (req, res) => {
-  res.json({ success: true, services: [
-    { id: 1, name: "Web Development", description: "Modern and responsive websites." },
-    { id: 2, name: "Digital Marketing", description: "Grow your business with digital marketing." },
-    { id: 3, name: "SEO", description: "Improve your search engine visibility." },
-    { id: 4, name: "Graphic Design", description: "Professional graphics and branding." },
-    { id: 5, name: "Video Editing", description: "Professional reels and video editing." },
-    { id: 6, name: "Business Solutions", description: "Digital solutions for modern businesses." }
-  ] });
-});
+app.get("/", (req, res) => res.json({ success: true, message: "Welcome to DigiSpark API", tagline: "Spark Your Digital Future", status: "Backend is running" }));
+app.get("/api/health", async (req, res) => { try { await db.query("SELECT 1"); res.json({ success: true, status: "healthy", database: "connected" }); } catch (error) { console.error("Health check database error:", error); res.status(503).json({ success: false, status: "unhealthy", database: "disconnected" }); } });
+app.get("/api/services", (req, res) => res.json({ success: true, services: [
+  { id: 1, name: "Web Development", description: "Modern and responsive websites." },
+  { id: 2, name: "Digital Marketing", description: "Grow your business with digital marketing." },
+  { id: 3, name: "SEO", description: "Improve your search engine visibility." },
+  { id: 4, name: "Graphic Design", description: "Professional graphics and branding." },
+  { id: 5, name: "Video Editing", description: "Professional reels and video editing." },
+  { id: 6, name: "Business Solutions", description: "Digital solutions for modern businesses." }
+] }));
 
 app.post("/api/ai/chat", aiRateLimit, async (req, res) => {
   try {
@@ -113,49 +102,23 @@ app.post("/api/ai/chat", aiRateLimit, async (req, res) => {
     const incoming = Array.isArray(req.body?.messages) ? req.body.messages : [];
     const messages = incoming.filter(item => item && (item.role === "user" || item.role === "assistant") && typeof item.content === "string").slice(-10).map(item => ({ role: item.role, content: item.content.slice(0, 4000) }));
     if (!messages.length || !messages.some(item => item.role === "user")) return res.status(400).json({ success: false, message: "Please enter a question." });
-
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.OPENAI_API_KEY}` },
-      body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-5.6-luna", instructions: DIGISPARK_AI_INSTRUCTIONS, input: messages, store: false, max_output_tokens: 700 })
-    });
+    const response = await fetch("https://api.openai.com/v1/responses", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.OPENAI_API_KEY}` }, body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-5.6-luna", instructions: DIGISPARK_AI_INSTRUCTIONS, input: messages, store: false, max_output_tokens: 700 }) });
     const data = await response.json();
-    if (!response.ok) {
-      console.error("OpenAI API error:", data);
-      return res.status(502).json({ success: false, message: "AI is temporarily unavailable. Please try again or contact DigiSpark on WhatsApp." });
-    }
+    if (!response.ok) { console.error("OpenAI API error:", data); return res.status(502).json({ success: false, message: "AI is temporarily unavailable. Please try again or contact DigiSpark on WhatsApp." }); }
     const answer = typeof data.output_text === "string" ? data.output_text.trim() : "";
     if (!answer) return res.status(502).json({ success: false, message: "AI could not generate a reply. Please try again." });
     res.json({ success: true, message: answer });
-  } catch (error) {
-    console.error("DigiSpark AI error:", error);
-    res.status(500).json({ success: false, message: "AI is temporarily unavailable. Please try again." });
-  }
+  } catch (error) { console.error("DigiSpark AI error:", error); res.status(500).json({ success: false, message: "AI is temporarily unavailable. Please try again." }); }
 });
 
 app.use("/api/enquiries", enquiryRateLimit, enquiryRoutes);
 app.use("/api/admin", adminRoutes);
 app.use((req, res) => res.status(404).json({ success: false, message: "API route not found." }));
 
-initializeDatabase().then(() => app.listen(PORT, () => console.log(`DigiSpark server running on port ${PORT}`)))
-  .catch((error) => { console.error("Database initialization failed:", error); process.exit(1); });
+initializeDatabase().then(() => app.listen(PORT, () => console.log(`DigiSpark server running on port ${PORT}`))).catch((error) => { console.error("Database initialization failed:", error); process.exit(1); });
 
 async function initializeDatabase() {
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS enquiries (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(100) NOT NULL,
-      email VARCHAR(150) NOT NULL,
-      phone VARCHAR(30),
-      service VARCHAR(100) NOT NULL,
-      project_type VARCHAR(100),
-      budget VARCHAR(100),
-      message TEXT NOT NULL,
-      status VARCHAR(30) DEFAULT 'new',
-      tracking_token VARCHAR(80) UNIQUE,
-      created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+  await db.query(`CREATE TABLE IF NOT EXISTS enquiries (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, email VARCHAR(150) NOT NULL, phone VARCHAR(30), service VARCHAR(100) NOT NULL, project_type VARCHAR(100), budget VARCHAR(100), message TEXT NOT NULL, status VARCHAR(30) DEFAULT 'new', tracking_token VARCHAR(80) UNIQUE, created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS phone VARCHAR(30)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS project_type VARCHAR(100)`);
   await db.query(`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS budget VARCHAR(100)`);
