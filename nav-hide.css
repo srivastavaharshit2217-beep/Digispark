@@ -1,0 +1,6 @@
+/* Hide Portfolio, Reviews and FAQ from the desktop navigation only */
+@media (min-width:851px){
+  body .nav-links a[href="#portfolio"],
+  body .nav-links a[href="#testimonials"],
+  body .nav-links a[href="#faq"]{display:none!important}
+}
