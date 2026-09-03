@@ -58,5 +58,17 @@ footer .footer{background:#000!important}
 .service-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article,.about-card{will-change:transform}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.service-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article,.about-card{transition:none!important;transform:none!important}.service-card::before,.portfolio-card::after,.industries-grid article::after,.tech-grid article::after{transition:none!important}}
 
-@media(max-width:850px){.hero{padding:70px 0 58px;min-height:auto}.hero-grid{grid-template-columns:1fr}.hero-content{max-width:100%}.hero h1{font-size:clamp(48px,12vw,72px);letter-spacing:-2.5px}.hero-visual{min-height:180px;margin-top:-8px;display:block}.hero-visual .visual-ring{display:none}.hero-visual::after{width:330px;height:330px;right:-100px;top:-85px}.card-top{right:8px;top:3px}.card-bottom{right:8px;bottom:0}}
-@media(max-width:600px){.hero h1{font-size:clamp(42px,13vw,62px)}.hero-text{font-size:16px;line-height:1.65}.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}.hero-visual{min-height:150px}.floating-card{transform:scale(.9);transform-origin:right top}}
+/* Final hero cleanup requested — text only, no DS artwork or floating promo cards */
+.hero-visual{display:none!important}
+.hero-grid{display:block!important}
+.hero-content{max-width:1100px!important}
+.hero h1{max-width:1050px!important;font-size:clamp(58px,8.5vw,108px)!important;line-height:.98!important;letter-spacing:-4px!important}
+.floating-card{display:none!important}
+
+/* Desktop header — DIGISPARK wordmark + side-by-side navigation */
+.header .logo span{display:none!important}
+.header .logo{gap:0!important;font-size:24px!important;letter-spacing:2px!important}
+.header .logo b,.header .logo strong{font-size:24px!important}
+
+@media(max-width:850px){.hero{padding:70px 0 58px;min-height:auto}.hero-content{max-width:100%!important}.hero h1{font-size:clamp(48px,12vw,72px)!important;letter-spacing:-2.5px!important}.nav-links{display:none}.nav-links.open{display:flex}}
+@media(max-width:600px){.hero h1{font-size:clamp(42px,13vw,62px)!important}.hero-text{font-size:16px;line-height:1.65}.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}.header .logo,.header .logo b,.header .logo strong{font-size:21px!important}}
