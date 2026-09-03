@@ -60,17 +60,30 @@ footer .footer{background:#000!important}
 .ds-ai-toggle svg{display:none!important}
 .ds-ai-toggle::after{content:"AI";display:grid;place-items:center;width:100%;height:100%;font-size:18px;font-weight:900;letter-spacing:.5px;color:#f5b72b}
 
-/* Floating contact controls — safe positions and easy future repositioning */
+/* Floating contact controls — fixed, non-obstructive positions */
 :root{--ds-call-right:24px;--ds-call-bottom:24px;--ds-ai-left:24px;--ds-ai-bottom:24px}
 .ds-lead-actions{right:var(--ds-call-right)!important;bottom:var(--ds-call-bottom)!important;pointer-events:none}
 .ds-lead-actions .ds-lead-btn{pointer-events:auto}
 #ds-ai-widget{left:var(--ds-ai-left)!important;bottom:var(--ds-ai-bottom)!important}
 .ds-lead-actions,#ds-ai-widget{isolation:isolate}
 
+/* FINAL HOMEPAGE CLEANUP — remove the hero-side visual/cards completely */
+.hero-visual{display:none!important}
+.hero-grid{grid-template-columns:1fr!important}
+.hero-content{max-width:100%!important}
+
+/* FINAL DESKTOP NAV — show links side-by-side; keep hamburger on mobile */
+@media(min-width:851px){
+  body .menu-btn{display:none!important}
+  body .nav-links{position:static!important;display:flex!important;flex-direction:row!important;align-items:center!important;min-width:0!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;gap:22px!important}
+  body .nav-links a{padding:0!important;font-size:13px!important;white-space:nowrap!important}
+  body .nav-links .nav-btn{margin:0!important;padding:10px 14px!important;border-radius:999px!important}
+}
+
 /* Step 8 — lightweight rendering and animation optimizations */
 .services-section,.about,.portfolio-section,.testimonials-section,.industries-section,.technologies-section,.faq-section,.contact{content-visibility:auto;contain-intrinsic-size:1px 700px}
 .service-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article,.about-card{will-change:transform}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.service-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article,.about-card{transition:none!important;transform:none!important}.service-card::before,.portfolio-card::after,.industries-grid article::after,.tech-grid article::after{transition:none!important}}
 
-@media(max-width:850px){.hero{padding:70px 0 58px;min-height:auto}.hero-grid{grid-template-columns:1fr}.hero-content{max-width:100%}.hero h1{font-size:clamp(48px,12vw,72px);letter-spacing:-2.5px}.hero-visual{min-height:180px;margin-top:-8px;display:block}.hero-visual .visual-ring{display:none}.hero-visual::after{width:330px;height:330px;right:-100px;top:-85px}.card-top{right:8px;top:3px}.card-bottom{right:8px;bottom:0}}
-@media(max-width:600px){.hero h1{font-size:clamp(42px,13vw,62px)}.hero-text{font-size:16px;line-height:1.65}.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}.hero-visual{min-height:150px}.floating-card{transform:scale(.9);transform-origin:right top}.ds-lead-actions{right:var(--ds-call-right)!important;bottom:var(--ds-call-bottom)!important}#ds-ai-widget{left:var(--ds-ai-left)!important;bottom:var(--ds-ai-bottom)!important}}
+@media(max-width:850px){.hero{padding:70px 0 58px;min-height:auto}.hero-grid{grid-template-columns:1fr!important}.hero-content{max-width:100%!important}.hero h1{font-size:clamp(48px,12vw,72px);letter-spacing:-2.5px}.hero-visual{display:none!important}.hero .buttons{margin-bottom:18px}}
+@media(max-width:600px){.hero h1{font-size:clamp(42px,13vw,62px)}.hero-text{font-size:16px;line-height:1.65}.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}.ds-lead-actions{right:var(--ds-call-right)!important;bottom:var(--ds-call-bottom)!important}#ds-ai-widget{left:var(--ds-ai-left)!important;bottom:var(--ds-ai-bottom)!important}}
