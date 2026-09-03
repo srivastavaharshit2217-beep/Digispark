@@ -43,3 +43,11 @@ footer .footer{background:#000!important}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.service-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article,.about-card{transition:none!important;transform:none!important}.service-card::before,.portfolio-card::after,.industries-grid article::after,.tech-grid article::after{transition:none!important}}
 
 @media(max-width:600px){.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}}
+
+/* Hero branding refinement — remove foreground logo and keep a subtle DS watermark in the background */
+.hero-logo-mark{display:none!important}
+.hero-visual::before{content:"DS";position:absolute;z-index:0;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(240px,28vw,420px);font-weight:900;line-height:1;letter-spacing:-24px;color:rgba(245,183,43,.055);text-shadow:0 0 55px rgba(245,183,43,.045);pointer-events:none;user-select:none}
+.hero-visual .visual-ring{z-index:1}
+.hero-visual .floating-card{z-index:3}
+@media(max-width:850px){.hero-visual::before{font-size:260px;letter-spacing:-18px;opacity:.8}}
+@media(max-width:600px){.hero-visual::before{font-size:210px;letter-spacing:-14px}}
