@@ -87,3 +87,10 @@ footer .footer{background:#000!important}
 
 @media(max-width:850px){.hero{padding:70px 0 58px;min-height:auto}.hero-grid{grid-template-columns:1fr!important}.hero-content{max-width:100%!important}.hero h1{font-size:clamp(48px,12vw,72px);letter-spacing:-2.5px}.hero-visual{display:none!important}.hero .buttons{margin-bottom:18px}}
 @media(max-width:600px){.hero h1{font-size:clamp(42px,13vw,62px)}.hero-text{font-size:16px;line-height:1.65}.hero .buttons::after{font-size:10px;line-height:1.7}.contact::before{font-size:10px;line-height:1.6}.portfolio-section .section-title>p:last-child::after{font-size:14px}.portfolio-card h3::after{font-size:19px}.ds-lead-actions{right:var(--ds-call-right)!important;bottom:var(--ds-call-bottom)!important}#ds-ai-widget{left:var(--ds-ai-left)!important;bottom:var(--ds-ai-bottom)!important}}
+
+/* FINAL MOBILE NAV — only the 3-line hamburger is visible; links stay collapsed */
+@media(max-width:850px){
+  body .menu-btn{display:flex!important;align-items:center!important;justify-content:center!important}
+  body .nav-links{display:none!important;position:absolute!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+  body .nav-links.open{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+}
