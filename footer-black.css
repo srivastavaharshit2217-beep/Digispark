@@ -95,32 +95,42 @@ footer .footer{background:#000!important}
   body .nav-links.open{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 }
 
-/* STEP 2 — Maroon + Black + White palette only */
-:root{--gold:#7F1D1D;--gold2:#EF4444;--dark:#0A0506;--dark2:#450A0A;--white:#F8FAFC;--muted:#aaa;--border:#242424;--soft:#f7f7f7;--black:#111}
-body{background:#fff}
-.header{background:rgba(10,5,6,.97)!important}
-.logo span,.logo strong,.nav-links a:hover,.secondary:hover,.stats strong,.hero h1 span,.ds-mark span:nth-child(2),.ds-mark i,.mark-name strong{color:#7F1D1D!important}
+/* STEP 2 — Maroon + White palette */
+:root{--gold:#7F1D1D;--gold2:#EF4444;--dark:#FFFFFF;--dark2:#F8FAFC;--white:#111827;--muted:#667085;--border:#E5E7EB;--soft:#F8FAFC;--black:#111827}
+body{background:#FFFFFF!important;color:#111827!important}
+.header{background:#FFFFFF!important;border-bottom:1px solid #E5E7EB!important}
+.logo span,.logo strong,.nav-links a,.nav-links a:hover,.secondary:hover,.stats strong,.hero h1 span,.ds-mark span:nth-child(2),.ds-mark i,.mark-name strong{color:#7F1D1D!important}
 .logo span{border-color:#7F1D1D!important}
-.nav-btn,.primary{background:#7F1D1D!important;color:#F8FAFC!important}
+.nav-links a{color:#111827!important}
+.nav-btn,.primary{background:#7F1D1D!important;color:#FFFFFF!important}
 .nav-btn:hover,.primary:hover{background:#EF4444!important}
-.hero{background:radial-gradient(circle at 78% 45%,#450A0A 0,#0A0506 35%,#050505 72%)!important}
-.hero-glow{background:rgba(127,29,29,.16)!important}
-.hero-badge{border-color:rgba(127,29,29,.45)!important;background:rgba(127,29,29,.10)!important;color:#EF4444!important}
+.hero{background:#FFFFFF!important;color:#111827!important}
+.hero h1,.hero-text{color:#111827!important}
+.hero-glow{background:rgba(127,29,29,.08)!important}
+.hero-badge{border-color:rgba(127,29,29,.30)!important;background:rgba(127,29,29,.06)!important;color:#7F1D1D!important}
+.secondary{color:#111827!important;border-color:#D1D5DB!important}
 .secondary:hover{border-color:#7F1D1D!important}
-.visual-ring{border-color:rgba(127,29,29,.24)!important}
-.floating-card>span{background:rgba(127,29,29,.14)!important;color:#EF4444!important}
+.visual-ring{border-color:rgba(127,29,29,.18)!important}
+.floating-card>span{background:rgba(127,29,29,.10)!important;color:#7F1D1D!important}
 .tag,.view-all,.service-card a,.about-intro h2 span,.about-stats strong{color:#7F1D1D!important}
 .view-all{border-color:#7F1D1D!important}
-.service-card::before{background:rgba(127,29,29,.10)!important}
+.service-card::before{background:rgba(127,29,29,.06)!important}
 .service-card:hover,.about-card:hover,.testimonial-card:hover,.industries-grid article:hover,.tech-grid article:hover{border-color:#7F1D1D!important}
 .icon,.about-icon,.review-author>span{color:#EF4444!important}
 .portfolio-section .tag,.portfolio-section .view-all,.portfolio-icon,.portfolio-card a,.faq-section .tag,.faq-list summary::after,.ds-ai-toggle::after{color:#EF4444!important}
 .portfolio-section .view-all{border-color:#7F1D1D!important}
-.portfolio-card::after,.industries-grid article::after,.tech-grid article::after{background:rgba(127,29,29,.10)!important}
+.portfolio-card::after,.industries-grid article::after,.tech-grid article::after{background:rgba(127,29,29,.06)!important}
 .portfolio-card:hover{border-color:#7F1D1D!important}
-.portfolio-icon{background:rgba(127,29,29,.12)!important;border-color:rgba(127,29,29,.25)!important}
+.portfolio-icon{background:rgba(127,29,29,.08)!important;border-color:rgba(127,29,29,.20)!important}
 .stars{color:#EF4444!important}
 .faq-list details[open]{border-color:#7F1D1D!important}
 .contact input:focus,.contact textarea:focus,.contact select:focus{border-color:#7F1D1D!important}
 .about .about-panel .about-card.wide{border-color:#7F1D1D!important}
-.about-icon,.icon{background:#0A0506!important}
+.about-icon,.icon{background:#F8FAFC!important}
+
+/* Remove remaining black backgrounds from the page sections/cards */
+section,.services-section,.about,.portfolio-section,.testimonials-section,.industries-section,.technologies-section,.faq-section,.contact,.service-card,.about-card,.portfolio-card,.testimonial-card,.industries-grid article,.tech-grid article{background:#FFFFFF!important;color:#111827!important}
+footer,footer .footer{background:#FFFFFF!important;color:#111827!important;border-top:1px solid #E5E7EB!important}
+footer a,footer p,footer h3,footer span{color:#111827!important}
+input,textarea,select{background:#FFFFFF!important;color:#111827!important;border-color:#D1D5DB!important}
+.ds-lead-actions .ds-lead-btn,#ds-ai-widget{background:#7F1D1D!important;color:#FFFFFF!important}
