@@ -94,3 +94,33 @@ footer .footer{background:#000!important}
   body .nav-links{display:none!important;position:absolute!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
   body .nav-links.open{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 }
+
+/* STEP 2 — Maroon + Black + White palette only */
+:root{--gold:#7F1D1D;--gold2:#EF4444;--dark:#0A0506;--dark2:#450A0A;--white:#F8FAFC;--muted:#aaa;--border:#242424;--soft:#f7f7f7;--black:#111}
+body{background:#fff}
+.header{background:rgba(10,5,6,.97)!important}
+.logo span,.logo strong,.nav-links a:hover,.secondary:hover,.stats strong,.hero h1 span,.ds-mark span:nth-child(2),.ds-mark i,.mark-name strong{color:#7F1D1D!important}
+.logo span{border-color:#7F1D1D!important}
+.nav-btn,.primary{background:#7F1D1D!important;color:#F8FAFC!important}
+.nav-btn:hover,.primary:hover{background:#EF4444!important}
+.hero{background:radial-gradient(circle at 78% 45%,#450A0A 0,#0A0506 35%,#050505 72%)!important}
+.hero-glow{background:rgba(127,29,29,.16)!important}
+.hero-badge{border-color:rgba(127,29,29,.45)!important;background:rgba(127,29,29,.10)!important;color:#EF4444!important}
+.secondary:hover{border-color:#7F1D1D!important}
+.visual-ring{border-color:rgba(127,29,29,.24)!important}
+.floating-card>span{background:rgba(127,29,29,.14)!important;color:#EF4444!important}
+.tag,.view-all,.service-card a,.about-intro h2 span,.about-stats strong{color:#7F1D1D!important}
+.view-all{border-color:#7F1D1D!important}
+.service-card::before{background:rgba(127,29,29,.10)!important}
+.service-card:hover,.about-card:hover,.testimonial-card:hover,.industries-grid article:hover,.tech-grid article:hover{border-color:#7F1D1D!important}
+.icon,.about-icon,.review-author>span{color:#EF4444!important}
+.portfolio-section .tag,.portfolio-section .view-all,.portfolio-icon,.portfolio-card a,.faq-section .tag,.faq-list summary::after,.ds-ai-toggle::after{color:#EF4444!important}
+.portfolio-section .view-all{border-color:#7F1D1D!important}
+.portfolio-card::after,.industries-grid article::after,.tech-grid article::after{background:rgba(127,29,29,.10)!important}
+.portfolio-card:hover{border-color:#7F1D1D!important}
+.portfolio-icon{background:rgba(127,29,29,.12)!important;border-color:rgba(127,29,29,.25)!important}
+.stars{color:#EF4444!important}
+.faq-list details[open]{border-color:#7F1D1D!important}
+.contact input:focus,.contact textarea:focus,.contact select:focus{border-color:#7F1D1D!important}
+.about .about-panel .about-card.wide{border-color:#7F1D1D!important}
+.about-icon,.icon{background:#0A0506!important}
