@@ -101,3 +101,38 @@ footer .footer{background:#000!important}
 .logo span::before{content:"D";color:#fff;font-size:26px;font-weight:900;line-height:1;letter-spacing:-4px}
 .logo span::after{content:"S";color:var(--gold);font-size:26px;font-weight:900;line-height:1;letter-spacing:-4px;margin-left:-1px}
 .logo b{color:#fff!important}.logo strong{color:var(--gold)!important}
+
+/* FINAL PREMIUM MAROON + GOLD THEME */
+:root{--gold:#D4AF37;--gold2:#F2D06B;--dark:#25060D;--dark2:#3B0710;--maroon:#5A0B18;--maroon-deep:#30060D;--white:#fff;--muted:#C9BFC1;--border:#6B2633;--soft:#F7EFF0;--black:#1B0509}
+body{background:var(--soft);color:var(--black)}
+.header{background:rgba(48,6,13,.97);border-bottom:1px solid rgba(212,175,55,.28)}
+.nav-links a{color:#fff}.nav-links a:hover{color:var(--gold2)}
+.nav-btn,.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#30060D!important;box-shadow:0 8px 25px rgba(212,175,55,.18)}
+.nav-btn:hover,.primary:hover{background:var(--gold2);color:#30060D!important}
+.hero{background:radial-gradient(circle at 75% 45%,#7A2638 0,#5A0B18 32%,#30060D 72%,#25060D 100%);color:#fff}
+.hero-glow{background:rgba(212,175,55,.13)}
+.hero h1 span,.stats strong{color:var(--gold2)}
+.hero-badge{border-color:rgba(212,175,55,.45);background:rgba(212,175,55,.10);color:var(--gold2)}
+.secondary{border-color:rgba(255,255,255,.38);color:#fff}.secondary:hover{border-color:var(--gold);color:var(--gold2)}
+.section{background:var(--soft)}
+.tag,.view-all,.service-card a,.about-intro h2 span{color:#9A7310}.view-all{border-color:#9A7310}
+.section-title>p:last-child,.about-text,.service-card p,.about-card p,.industries-grid p,.tech-grid p{color:#66575A}
+.services-section,.industries-section{background:#FDF9FA}
+.service-card,.about-card,.industries-grid article,.tech-grid article,.testimonial-card{background:linear-gradient(145deg,#fff,#F9F0F2);border-color:#E6D5D9}
+.service-card:hover,.about-card:hover,.industries-grid article:hover,.tech-grid article:hover,.testimonial-card:hover{border-color:rgba(154,115,16,.65);box-shadow:0 20px 50px rgba(48,6,13,.12)}
+.icon,.about-icon,.review-author>span{background:var(--maroon-deep);color:var(--gold2)}
+.about{background:#F3E7EA}
+.about .about-panel .about-card.wide{border-color:#B58D20}
+.portfolio-section,.faq-section{background:linear-gradient(180deg,#30060D,#25060D);color:#fff}
+.portfolio-card{background:linear-gradient(145deg,#5A0B18,#30060D);border-color:rgba(212,175,55,.20)}
+.portfolio-card:hover{border-color:rgba(212,175,55,.65);box-shadow:0 22px 55px rgba(20,2,6,.45)}
+.portfolio-icon,.floating-card>span{background:rgba(212,175,55,.11);border-color:rgba(212,175,55,.25);color:var(--gold2)}
+.testimonials-section,.technologies-section{background:#F3E7EA}
+.stars{color:#A67C16}.review-author{border-top-color:#E8DDE0}
+.industries-grid article::after,.tech-grid article::after,.service-card::before{background:rgba(212,175,55,.12)}
+.faq-section details{border-color:rgba(212,175,55,.24)}
+.contact{background:linear-gradient(135deg,#5A0B18,#30060D);color:#fff}
+.contact p,.contact label{color:#E6DDE0}.contact input,.contact textarea,.contact select{background:#3B0710;border-color:#7B3948;color:#fff}.contact input::placeholder,.contact textarea::placeholder{color:#BCAFB2}
+footer{background:#1C0308!important;border-top:1px solid rgba(212,175,55,.25)!important}footer .footer{background:#1C0308!important}
+.logo span::after,.logo strong{color:var(--gold2)!important}
+@media(max-width:850px){.nav-links{background:rgba(48,6,13,.99)!important;border-bottom-color:rgba(212,175,55,.25)!important}}
