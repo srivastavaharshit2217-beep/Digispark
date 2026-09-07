@@ -1,0 +1,74 @@
+/* DigiSpark premium maroon + yellow theme */
+:root{--gold:#f5b72b;--gold2:#ffd866;--maroon:#7f1d1d;--maroon2:#991b1b;--black:#111;--white:#fff}
+
+/* Header */
+.header{background:var(--maroon)!important;border-bottom:2px solid var(--gold)!important}
+.nav-links a{color:#fff!important}.nav-links a:hover{color:var(--gold)!important}
+.nav-btn{background:var(--gold)!important;color:#111!important}.nav-btn:hover{background:var(--gold2)!important}
+
+/* Main banner / hero: maroon + yellow */
+.hero{background:linear-gradient(135deg,#7f1d1d 0%,#991b1b 52%,#5b1111 100%)!important;color:#fff!important}
+.hero-glow{background:rgba(245,183,43,.18)!important}
+.hero-badge{border-color:rgba(245,183,43,.6)!important;background:rgba(245,183,43,.12)!important;color:var(--gold2)!important}
+.hero h1{color:#fff!important}.hero h1 span{color:var(--gold)!important}
+.hero-text{color:#fff!important}
+.primary{background:var(--gold)!important;color:#111!important}.primary:hover{background:var(--gold2)!important}
+.secondary{border-color:#fff!important;color:#fff!important}.secondary:hover{border-color:var(--gold)!important;color:var(--gold)!important}
+.stats strong{color:var(--gold)!important}.stats small{color:#fff!important}
+
+/* ALL headings: yellow highlights / black text on light sections */
+.section-title h2,.about h2,.contact h2,.about-intro h2{color:#111!important}
+.section-title h2 span,.about h2 span,.about-intro h2 span{color:var(--gold)!important}
+.portfolio-section .section-title h2,.faq-section .section-title h2{color:#fff!important}
+.tag{color:var(--maroon)!important}
+.portfolio-section .tag,.faq-section .tag{color:var(--gold)!important}
+
+/* Subheadings / supporting headings */
+.section-title>p:last-child,.about-text,.service-card p,.about-card p,.industries-grid p,.tech-grid p,.testimonial-card>p{color:#111!important}
+.portfolio-section .section-title>p:last-child,.faq-section .section-title>p:last-child,.portfolio-card p{color:#fff!important;opacity:.9}
+.service-card h3,.about-card h3,.industries-grid h3,.tech-grid h3{color:var(--maroon)!important}
+
+/* Highlighted text */
+.service-card a,.view-all,.about-stats strong,.industries-grid span,.tech-grid span,.stars{color:var(--gold)!important}
+.service-card:hover,.about-card:hover,.industries-grid article:hover,.tech-grid article:hover,.testimonial-card:hover{border-color:var(--gold)!important}
+.icon,.about-icon{background:var(--maroon)!important;color:var(--gold)!important}
+
+/* White sections with maroon/yellow accents */
+.services-section,.industries-section{background:#fff!important}
+.about,.testimonials-section,.technologies-section{background:#fff!important}
+.service-card,.about-card,.testimonial-card,.industries-grid article,.tech-grid article{background:#fff!important;border-color:#eadfdf!important}
+.service-card::before,.industries-grid article::after,.tech-grid article::after{background:rgba(245,183,43,.13)!important}
+
+/* Dark sections */
+.portfolio-section,.faq-section{background:var(--maroon)!important;color:#fff!important}
+.portfolio-card{background:linear-gradient(145deg,#5f1515,#7f1d1d)!important;border-color:rgba(245,183,43,.28)!important}
+.portfolio-icon{background:rgba(245,183,43,.13)!important;border-color:rgba(245,183,43,.35)!important;color:var(--gold)!important}
+
+/* FAQ */
+.faq-list details{border-color:rgba(245,183,43,.35)!important;background:#fff!important;color:#111!important}
+.faq-list summary{color:var(--maroon)!important}
+.faq-list p{color:#111!important}
+
+/* Contact banner */
+.contact{background:var(--gold)!important;color:#111!important}
+.contact .tag{color:var(--maroon)!important}
+.contact h2,.contact p{color:#111!important}
+.contact form{background:#fff!important;border-color:var(--maroon)!important}
+.contact label{color:var(--maroon)!important}
+
+/* Footer: white + maroon + yellow */
+footer{background:#fff!important;color:#111!important;border-top:4px solid var(--maroon)!important}
+footer .footer{background:#fff!important;color:#111!important}
+footer .logo b{color:var(--maroon)!important}footer .logo strong{color:var(--maroon)!important}
+footer a{color:var(--maroon)!important}footer a:hover{color:var(--gold)!important}
+footer p,footer small,footer span{color:#111!important}
+
+/* Keep current DigiSpark logo exactly in place; only theme colors change */
+.logo{gap:11px!important;letter-spacing:3px!important}
+.logo span{font-size:0!important;border:0!important;padding:0!important;width:48px!important;height:48px!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;letter-spacing:0!important;color:transparent!important}
+.logo span::before{content:"D";color:#fff;font-size:26px;font-weight:900;line-height:1;letter-spacing:-4px}
+.logo span::after{content:"S";color:var(--gold);font-size:26px;font-weight:900;line-height:1;letter-spacing:-4px;margin-left:-1px}
+.logo b{color:#fff!important}.logo strong{color:var(--gold)!important}
+
+/* Mobile readability */
+@media(max-width:600px){.hero h1{color:#fff!important}.hero-text{color:#fff!important}.section-title h2,.about h2,.contact h2{color:#111!important}.portfolio-section .section-title h2,.faq-section .section-title h2{color:#fff!important}}
